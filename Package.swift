@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "ShamirSecretSharing",
     products: [
-        .library(name: "ShamirSecretSharing", targets: ["libsss"])
+        .library(name: "SSSSwift", targets: ["libsss"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -15,5 +15,7 @@ let package = Package(
     targets: [
     .target(name: "libsss"),
     .target(name: "ShamirSecretSharing", dependencies: ["libsss"]),
+    .target(name: "SSSSwift", dependencies: ["libsss"]),
+    .testTarget(name: "ShamirSecretSharingTests", dependencies: ["SSSSwift"])
     ]
 )
