@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "ShamirSecretSharing",
+    name: "SSSSwift",
     products: [
         .library(name: "SSSSwift", targets: ["libsss"]),
     ],
