@@ -17,27 +17,64 @@ final class ShamirSecretSharingTests: XCTestCase {
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
-    func testThreeMethods() throws {
-        let myLib = MyLib()
-        print("MyLib.Foo: \(myLib.foo())")
-        
-        let data = Array<UInt8>.init(repeating: 42, count: 64)
-        
-        let shares = try? CreateShares(data: data, n: 5, k: 3)
-        
-        print(shares ?? "CreateShares error")
-        
-        var restored = try CombineShares(shares: shares!)
-        
-        print(restored ?? "CombineShares error")
+    
+    func testKeyShares() throws {
         
         let key = Array<UInt8>.init(repeating: 42, count: 32)
-        let keyshares = try? CreateKeyshares(key: key, n: 5, k: 3)
+        let keyshares = try? CreateKeyshares(key: key, n: 3, k: 3)
         
-        print(keyshares ?? "CreateShares error")
+        XCTAssertEqual(keyshares?.count, 3)
         
-        restored = try CombineKeyshares(keyshares: keyshares!)
-        print(restored ?? "Convertsion error")
+        let part1 = keyshares![0]
+        let part2 = keyshares![1]
+        let part3 = keyshares![2]
+        
+        let part1Encoded = part1.data.base64EncodedString()
+        let part2Encoded = part2.data.base64EncodedString()
+        let part3Encoded = part3.data.base64EncodedString()
+        print("Part1: \(part1Encoded)")
+        print("Part2: \(part2Encoded)")
+        print("Part3: \(part3Encoded)")
+        
+        let part1Decoded = Data.init(base64Encoded: part1Encoded)
+        let part2Decoded = Data.init(base64Encoded: part2Encoded)
+        let part3Decoded = Data.init(base64Encoded: part3Encoded)
+        
+        let joined = [part1Decoded!.bytes, part2Decoded!.bytes, part3Decoded!.bytes]
+        
+        let restored = try? CombineKeyshares(keyshares: joined)
+        XCTAssertEqual(restored, key)
+    }
+}
+
+public typealias Bytes = Array<UInt8>
+
+extension Array where Element == UInt8 {
+    init (count bytes: Int) {
+        self.init(repeating: 0, count: bytes)
+    }
+
+    public var utf8String: String? {
+        return String(data: Data(self), encoding: .utf8)
+    }
+}
+
+extension ArraySlice where Element == UInt8 {
+    var bytes: Bytes { return Bytes(self) }
+}
+
+public extension String {
+    var bytes: Bytes { return Bytes(self.utf8) }
+}
+
+extension Bytes {
+    var data: Data {
+        return Data.init(bytes: self, count: count)
+    }
+}
+
+extension Data {
+    var bytes: [UInt8] {
+        return [UInt8](self)
     }
 }
