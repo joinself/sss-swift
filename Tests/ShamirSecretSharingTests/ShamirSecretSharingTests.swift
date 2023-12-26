@@ -45,6 +45,34 @@ final class ShamirSecretSharingTests: XCTestCase {
         let restored = try? CombineKeyshares(keyshares: joined)
         XCTAssertEqual(restored, key)
     }
+    
+    func testShares() throws {
+        
+        let key = Array<UInt8>.init(repeating: 42, count: 64)
+        let keyshares = try? CreateShares(data: key, n: 3, k: 2)
+        
+        XCTAssertEqual(keyshares?.count, 3)
+        
+        let part1 = keyshares![0]
+        let part2 = keyshares![1]
+        let part3 = keyshares![2]
+        
+        let part1Encoded = part1.data.base64EncodedString()
+        let part2Encoded = part2.data.base64EncodedString()
+        let part3Encoded = part3.data.base64EncodedString()
+        print("Part1: \(part1Encoded)")
+        print("Part2: \(part2Encoded)")
+        print("Part3: \(part3Encoded)")
+        
+        let part1Decoded = Data.init(base64Encoded: part1Encoded)
+        let part2Decoded = Data.init(base64Encoded: part2Encoded)
+        let part3Decoded = Data.init(base64Encoded: part3Encoded)
+        
+        let joined = [part1Decoded!.bytes, part2Decoded!.bytes, part3Decoded!.bytes]
+        
+        let restored = try? CombineShares(shares: joined)
+        XCTAssertEqual(restored, key)
+    }
 }
 
 public typealias Bytes = Array<UInt8>
