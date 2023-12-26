@@ -21,7 +21,7 @@ final class ShamirSecretSharingTests: XCTestCase {
     func testKeyShares() throws {
         
         let key = Array<UInt8>.init(repeating: 42, count: 32)
-        let keyshares = try? CreateKeyshares(key: key, n: 3, k: 3)
+        let keyshares = try? CreateKeyshares(key: key, n: 3, k: 2)
         
         XCTAssertEqual(keyshares?.count, 3)
         
