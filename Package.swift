@@ -1,10 +1,10 @@
-// swift-tools-version:6.1.0
+// swift-tools-version:5.4.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
-    name: "SSSSwift",
+    name: "S3Swift",
     products: [
         .library(name: "SSSSwift", targets: ["libsss", "SSSSwift"]),
     ],
